@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>植物根吸水力：雷射模擬實驗室</title>
+    <style>
+        body { font-family: "Microsoft JhengHei", sans-serif; background: #eef2f3; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .lab-container { background: #fff; width: 90%; max-width: 900px; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 10px solid #2e7d32; }
+        h1 { color: #1b5e20; text-align: center; }
+        .setup-viz { width: 100%; height: 250px; background: #000; border-radius: 10px; margin: 20px 0; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        .laser-beam { position: absolute; height: 2px; left: 0; width: 50%; display: none; }
+        .fringe-pattern { width: 40%; height: 100%; position: absolute; right: 0; display: none; background-image: radial-gradient(circle, transparent 20%, #000 20%); }
+        
+        .tool-box { background: #f9f9f9; padding: 20px; border-radius: 10px; border: 1px solid #ddd; }
+        .laser-btn { padding: 10px 20px; margin: 5px; cursor: pointer; border: 2px solid transparent; border-radius: 5px; font-weight: bold; }
+        .btn-green { background: #4caf50; color: white; }
+        .btn-purple { background: #9c27b0; color: white; }
+        .laser-btn.active { border-color: #333; box-shadow: 0 0 10px rgba(0,0,0,0.3); }
+        
+        .calc-panel { margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 10px; }
+        input { padding: 8px; width: 80px; margin: 5px; }
+        .result { font-size: 1.2em; color: #d32f2f; font-weight: bold; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="lab-container">
+        <h1>實驗四：雷射干涉微觀測量模擬</h1>
+        <p>根據來源報告，利用雙狹縫干涉原理 $d = \lambda L / 2S$ 來推算植物根部的直徑 [2, 3]。</p>
+
+        <div class="tool-box">
+            <h3>第一步：選擇雷射光源</h3>
+            <button id="greenBtn" class="laser-btn btn-green" onclick="selectLaser('green', 532)">🟢 綠光雷射 (532nm)</button>
+            <button id="purpleBtn" class="laser-btn btn-purple" onclick="selectLaser('purple', 405)">🟣 紫光雷射 (405nm)</button>
+            <p><small>*註：來源研究指出綠光效果最清晰 [1]；紫光波長較短，條紋間距會縮短。</small></p>
+        </div>
+
+        <div class="setup-viz" id="viz">
+            <div id="beam" class="laser-beam"></div>
+            <div id="root" style="width: 10px; height: 100px; background: #cddc39; z-index: 10; border-radius: 5px; display:none;"></div>
+            <div id="fringe" class="fringe-pattern"></div>
+            <div id="msg" style="color: white;">請選擇雷射並點擊「發射雷射」</div>
+        </div>
+
+        <div class="calc-panel">
+            <h3>第二步：操作與讀值</h3>
+            <button onclick="fireLaser()" style="padding: 10px 20px; background: #333; color: white; border: none; border-radius: 5px; cursor:pointer;">🔦 發射雷射</button>
+            <hr>
+            <label>根至屏幕距離 L (mm):</label> 
+            <input type="number" id="distL" value="8394"> 
+            <label>測得亮紋間距 S (mm):</label> 
+            <input type="number" id="stripeS" value="1.92" step="0.01">
+            <button onclick="calculate()">進行公式推算</button>
+            <div id="resultArea" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentWavelength = 0;
+        let currentColor = '';
+
+        function selectLaser(color, wl) {
+            currentWavelength = wl;
+            currentColor = (color === 'green') ? '#00ff00' : '#bf00ff';
+            
+            document.querySelectorAll('.laser-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(color + 'Btn').classList.add('active');
+            
+            // 重設視覺效果
+            document.getElementById('beam').style.display = 'none';
+            document.getElementById('fringe').style.display = 'none';
+            document.getElementById('root').style.display = 'none';
+            document.getElementById('msg').innerText = "光源已就緒，請發射雷射。";
+        }
+
+        function fireLaser() {
+            if (currentWavelength === 0) {
+                alert("請先選擇雷射光源！");
+                return;
+            }
+            document.getElementById('msg').style.display = 'none';
+            document.getElementById('root').style.display = 'block';
+            
+            const beam = document.getElementById('beam');
+            beam.style.display = 'block';
+            beam.style.backgroundColor = currentColor;
+            beam.style.boxShadow = "0 0 15px " + currentColor;
+
+            const fringe = document.getElementById('fringe');
+            fringe.style.display = 'block';
+            // 模擬不同波長的條紋寬度感官差異
+            let gap = (currentWavelength / 10).toFixed(0);
+            fringe.style.backgroundSize = gap + "px 100%";
+            fringe.style.backgroundImage = `linear-gradient(90deg, ${currentColor} 10%, transparent 10%)`;
+        }
+
+        function calculate() {
+            if (currentWavelength === 0) return;
+            let L = parseFloat(document.getElementById('distL').value);
+            let S = parseFloat(document.getElementById('stripeS').value);
+            let lambda = currentWavelength / 1000000; // 轉為 mm
+            
+            // 公式: d = (lambda * L) / (2 * S) [3]
+            let d = (lambda * L) / (2 * S);
+            
+            document.getElementById('resultArea').innerHTML = 
+                `波長: ${currentWavelength}nm<br>推算植物根直徑 d = ${d.toFixed(3)} mm`;
+        }
+    </script>
+</body>
+</html>
