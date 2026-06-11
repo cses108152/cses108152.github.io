@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1A2B Cyber Dark Edition</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI","Microsoft JhengHei",sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    overflow:hidden;
+
+    background:
+        radial-gradient(circle at 20% 20%, rgba(59,130,246,.25), transparent 30%),
+        radial-gradient(circle at 80% 30%, rgba(139,92,246,.25), transparent 30%),
+        radial-gradient(circle at 50% 80%, rgba(6,182,212,.15), transparent 30%),
+        linear-gradient(135deg,#020617,#0f172a);
+
+    color:white;
+}
+
+.bg-glow{
+    position:fixed;
+    width:600px;
+    height:600px;
+    border-radius:50%;
+    background:rgba(59,130,246,.12);
+    filter:blur(100px);
+    animation:floatGlow 10s infinite alternate ease-in-out;
+    pointer-events:none;
+}
+
+@keyframes floatGlow{
+    from{
+        transform:translate(-100px,-50px);
+    }
+    to{
+        transform:translate(120px,80px);
+    }
+}
+
+.container{
+    width:100%;
+    max-width:750px;
+
+    background:rgba(15,23,42,.78);
+
+    backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:24px;
+
+    padding:30px;
+
+    box-shadow:
+        0 0 30px rgba(59,130,246,.25),
+        0 0 80px rgba(139,92,246,.15);
+
+    z-index:1;
+}
+
+h1{
+    text-align:center;
+    font-size:3rem;
+    color:#60a5fa;
+
+    text-shadow:
+        0 0 10px #3b82f6,
+        0 0 30px #3b82f6;
+
+    margin-bottom:10px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#94a3b8;
+    margin-bottom:25px;
+}
+
+.input-area{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+input{
+    width:220px;
+
+    padding:14px;
+
+    border-radius:12px;
+
+    border:1px solid #334155;
+
+    background:#0f172a;
+
+    color:white;
+
+    text-align:center;
+
+    font-size:1.2rem;
+
+    transition:.3s;
+}
+
+input:focus{
+    outline:none;
+
+    border-color:#60a5fa;
+
+    box-shadow:
+        0 0 20px rgba(96,165,250,.6);
+}
+
+button{
+    padding:14px 22px;
+
+    border:none;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    font-weight:bold;
+
+    transition:.25s;
+}
+
+.guess-btn{
+    background:#2563eb;
+    color:white;
+}
+
+.guess-btn:hover{
+    background:#3b82f6;
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 0 20px rgba(59,130,246,.7);
+}
+
+.restart-btn{
+    background:#7c3aed;
+    color:white;
+}
+
+.restart-btn:hover{
+    background:#8b5cf6;
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 0 20px rgba(139,92,246,.7);
+}
+
+#message{
+    min-height:45px;
+    text-align:center;
+    margin-top:20px;
+    font-size:1.1rem;
+}
+
+.success{
+    color:#22c55e;
+
+    text-shadow:
+        0 0 10px #22c55e,
+        0 0 25px #22c55e;
+
+    animation:flash 1s infinite alternate;
+}
+
+@keyframes flash{
+    from{
+        opacity:.7;
+    }
+    to{
+        opacity:1;
+    }
+}
+
+.info{
+    color:#38bdf8;
+}
+
+.table-wrapper{
+    margin-top:25px;
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+thead{
+    background:#1e293b;
+}
+
+th{
+    color:#60a5fa;
+}
+
+th,td{
+    padding:14px;
+    text-align:center;
+}
+
+tbody tr{
+    border-bottom:1px solid #334155;
+}
+
+tbody tr:hover{
+    background:rgba(96,165,250,.08);
+}
+
+.result{
+    color:#facc15;
+    font-weight:bold;
+}
+
+.footer{
+    text-align:center;
+    margin-top:20px;
+    color:#64748b;
+    font-size:.9rem;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg-glow"></div>
+
+<div class="container">
+
+    <h1>🎯 1A2B</h1>
+
+    <div class="subtitle">
+        破解隱藏的四位數密碼
+    </div>
+
+    <div class="input-area">
+
+        <input
+            type="text"
+            id="guess"
+            maxlength="4"
+            placeholder="輸入4位不重複數字">
+
+        <button
+            class="guess-btn"
+            onclick="checkGuess()">
+            猜測
+        </button>
+
+        <button
+            class="restart-btn"
+            onclick="newGame()">
+            重新開始
+        </button>
+
+    </div>
+
+    <div id="message"></div>
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>回合</th>
+                    <th>猜測數字</th>
+                    <th>結果</th>
+                </tr>
+            </thead>
+
+            <tbody id="history"></tbody>
+
+        </table>
+
+    </div>
+
+    <div class="footer">
+        Cyber Dark Edition
+    </div>
+
+</div>
+
+<script>
+
+let answer = "";
+let count = 0;
+
+function generateAnswer(){
+
+    const nums = ['0','1','2','3','4','5','6','7','8','9'];
+
+    let result = "";
+
+    for(let i=0;i<4;i++){
+
+        const index =
+            Math.floor(Math.random()*nums.length);
+
+        result += nums[index];
+
+        nums.splice(index,1);
+    }
+
+    return result;
+}
+
+function newGame(){
+
+    answer = generateAnswer();
+
+    count = 0;
+
+    document.getElementById("history").innerHTML = "";
+
+    document.getElementById("message").innerHTML = "";
+
+    document.getElementById("guess").value = "";
+
+    console.log("答案：",answer);
+}
+
+function checkGuess(){
+
+    const guess =
+        document.getElementById("guess").value.trim();
+
+    if(!/^\d{4}$/.test(guess)){
+        alert("請輸入4位數字");
+        return;
+    }
+
+    if(new Set(guess).size !== 4){
+        alert("數字不可重複");
+        return;
+    }
+
+    count++;
+
+    let A = 0;
+    let B = 0;
+
+    for(let i=0;i<4;i++){
+
+        if(guess[i] === answer[i]){
+            A++;
+        }
+        else if(answer.includes(guess[i])){
+            B++;
+        }
+    }
+
+    const tbody =
+        document.getElementById("history");
+
+    const row =
+        tbody.insertRow();
+
+    row.insertCell(0).textContent = count;
+    row.insertCell(1).textContent = guess;
+
+    const resultCell =
+        row.insertCell(2);
+
+    resultCell.textContent =
+        `${A}A${B}B`;
+
+    resultCell.className =
+        "result";
+
+    const message =
+        document.getElementById("message");
+
+    if(A === 4){
+
+        message.className =
+            "success";
+
+        message.innerHTML =
+            `🎉 破解成功！<br>
+            答案：<b>${answer}</b><br>
+            共猜測 <b>${count}</b> 次`;
+
+    }else{
+
+        message.className =
+            "info";
+
+        message.innerHTML =
+            `第 ${count} 次猜測 → ${A}A${B}B`;
+    }
+
+    document.getElementById("guess").value = "";
+
+    document.getElementById("guess").focus();
+}
+
+document
+.getElementById("guess")
+.addEventListener("keydown",function(e){
+
+    if(e.key === "Enter"){
+        checkGuess();
+    }
+});
+
+newGame();
+
+</script>
+
+</body>
+</html>S
