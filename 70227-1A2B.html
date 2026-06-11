@@ -3,289 +3,373 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>1A2B Cyber Dark Edition</title>
+<title>動漫風 1A2B</title>
 
 <style>
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:"Segoe UI","Microsoft JhengHei",sans-serif;
+    font-family:"Microsoft JhengHei","Segoe UI",sans-serif;
 }
 
 body{
     min-height:100vh;
+    overflow-x:hidden;
+
+    background:
+    radial-gradient(circle at top left,#ff9ecf 0%,transparent 35%),
+    radial-gradient(circle at top right,#a78bfa 0%,transparent 35%),
+    linear-gradient(135deg,#f472b6,#c084fc,#60a5fa);
+
     display:flex;
     justify-content:center;
     align-items:center;
     padding:20px;
-    overflow:hidden;
-
-    background:
-        radial-gradient(circle at 20% 20%, rgba(59,130,246,.25), transparent 30%),
-        radial-gradient(circle at 80% 30%, rgba(139,92,246,.25), transparent 30%),
-        radial-gradient(circle at 50% 80%, rgba(6,182,212,.15), transparent 30%),
-        linear-gradient(135deg,#020617,#0f172a);
-
-    color:white;
 }
 
-.bg-glow{
+/* 飄浮光點 */
+body::before{
+    content:"";
     position:fixed;
-    width:600px;
-    height:600px;
-    border-radius:50%;
-    background:rgba(59,130,246,.12);
-    filter:blur(100px);
-    animation:floatGlow 10s infinite alternate ease-in-out;
+    inset:0;
+
+    background:
+    radial-gradient(circle,#ffffff99 2px,transparent 3px);
+
+    background-size:60px 60px;
+
+    animation:floatBg 15s linear infinite;
+
     pointer-events:none;
 }
 
-@keyframes floatGlow{
-    from{
-        transform:translate(-100px,-50px);
-    }
-    to{
-        transform:translate(120px,80px);
-    }
+@keyframes floatBg{
+    from{transform:translateY(0);}
+    to{transform:translateY(-60px);}
 }
 
-.container{
+.wrapper{
+    display:flex;
+    gap:30px;
+    align-items:center;
+    flex-wrap:wrap;
+    justify-content:center;
+}
+
+/* 動漫角色區 */
+.character{
+    width:320px;
+    height:520px;
+    position:relative;
+}
+
+.character-card{
     width:100%;
-    max-width:750px;
+    height:100%;
 
-    background:rgba(15,23,42,.78);
+    background:
+    linear-gradient(
+        180deg,
+        rgba(255,255,255,.35),
+        rgba(255,255,255,.15)
+    );
 
-    backdrop-filter:blur(18px);
+    backdrop-filter:blur(15px);
 
-    border:1px solid rgba(255,255,255,.08);
+    border-radius:30px;
 
-    border-radius:24px;
+    box-shadow:
+    0 0 30px rgba(255,255,255,.4),
+    0 0 80px rgba(236,72,153,.25);
+
+    overflow:hidden;
+}
+
+.anime-silhouette{
+    position:absolute;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:220px;
+    height:430px;
+}
+
+/* 頭 */
+.head{
+    width:95px;
+    height:95px;
+    background:#fff;
+    border-radius:50%;
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    top:20px;
+}
+
+/* 頭髮 */
+.hair{
+    width:130px;
+    height:120px;
+    background:#8b5cf6;
+    border-radius:70px 70px 40px 40px;
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    top:5px;
+}
+
+/* 身體 */
+.body{
+    width:120px;
+    height:180px;
+    background:#ffffff;
+    position:absolute;
+    top:110px;
+    left:50%;
+    transform:translateX(-50%);
+    border-radius:30px;
+}
+
+/* 裙子 */
+.skirt{
+    width:170px;
+    height:120px;
+    background:#ec4899;
+    position:absolute;
+    top:250px;
+    left:50%;
+    transform:translateX(-50%);
+    clip-path:polygon(10% 0%,90% 0%,100% 100%,0% 100%);
+}
+
+/* 腿 */
+.leg1,.leg2{
+    width:25px;
+    height:120px;
+    background:#fff;
+    position:absolute;
+    top:360px;
+    border-radius:15px;
+}
+
+.leg1{left:85px;}
+.leg2{right:85px;}
+
+.character-text{
+    position:absolute;
+    top:25px;
+    width:100%;
+    text-align:center;
+    color:white;
+    font-size:1.4rem;
+    font-weight:bold;
+    text-shadow:0 0 15px #fff;
+}
+
+/* 遊戲區 */
+.panel{
+    width:650px;
+    max-width:95vw;
+
+    background:
+    rgba(255,255,255,.18);
+
+    backdrop-filter:blur(20px);
+
+    border-radius:30px;
 
     padding:30px;
 
     box-shadow:
-        0 0 30px rgba(59,130,246,.25),
-        0 0 80px rgba(139,92,246,.15);
-
-    z-index:1;
+    0 0 30px rgba(255,255,255,.25),
+    0 0 60px rgba(168,85,247,.2);
 }
 
 h1{
     text-align:center;
+    color:white;
     font-size:3rem;
-    color:#60a5fa;
 
     text-shadow:
-        0 0 10px #3b82f6,
-        0 0 30px #3b82f6;
+    0 0 15px rgba(255,255,255,.8);
 
     margin-bottom:10px;
 }
 
 .subtitle{
     text-align:center;
-    color:#94a3b8;
+    color:white;
     margin-bottom:25px;
 }
 
 .input-area{
     display:flex;
     justify-content:center;
-    flex-wrap:wrap;
     gap:10px;
+    flex-wrap:wrap;
 }
 
 input{
     width:220px;
-
     padding:14px;
 
-    border-radius:12px;
-
-    border:1px solid #334155;
-
-    background:#0f172a;
-
-    color:white;
+    border:none;
+    border-radius:15px;
 
     text-align:center;
-
-    font-size:1.2rem;
-
-    transition:.3s;
-}
-
-input:focus{
-    outline:none;
-
-    border-color:#60a5fa;
-
-    box-shadow:
-        0 0 20px rgba(96,165,250,.6);
+    font-size:1.1rem;
 }
 
 button{
-    padding:14px 22px;
-
     border:none;
+    padding:14px 20px;
 
-    border-radius:12px;
+    border-radius:15px;
 
     cursor:pointer;
 
+    color:white;
     font-weight:bold;
 
     transition:.25s;
 }
 
 .guess-btn{
-    background:#2563eb;
-    color:white;
+    background:#ec4899;
 }
 
 .guess-btn:hover{
-    background:#3b82f6;
-
-    transform:translateY(-2px);
-
-    box-shadow:
-        0 0 20px rgba(59,130,246,.7);
+    transform:translateY(-3px);
+    box-shadow:0 0 20px #ec4899;
 }
 
 .restart-btn{
-    background:#7c3aed;
-    color:white;
+    background:#8b5cf6;
 }
 
 .restart-btn:hover{
-    background:#8b5cf6;
-
-    transform:translateY(-2px);
-
-    box-shadow:
-        0 0 20px rgba(139,92,246,.7);
+    transform:translateY(-3px);
+    box-shadow:0 0 20px #8b5cf6;
 }
 
 #message{
-    min-height:45px;
-    text-align:center;
+    min-height:60px;
     margin-top:20px;
+    text-align:center;
+    color:white;
     font-size:1.1rem;
 }
 
 .success{
-    color:#22c55e;
-
-    text-shadow:
-        0 0 10px #22c55e,
-        0 0 25px #22c55e;
-
-    animation:flash 1s infinite alternate;
+    color:#fff;
+    font-weight:bold;
+    animation:flash .8s infinite alternate;
 }
 
 @keyframes flash{
-    from{
-        opacity:.7;
-    }
-    to{
-        opacity:1;
-    }
-}
-
-.info{
-    color:#38bdf8;
-}
-
-.table-wrapper{
-    margin-top:25px;
-    overflow-x:auto;
+    from{opacity:.5;}
+    to{opacity:1;}
 }
 
 table{
     width:100%;
+    margin-top:20px;
     border-collapse:collapse;
+
+    overflow:hidden;
+    border-radius:15px;
 }
 
 thead{
-    background:#1e293b;
-}
-
-th{
-    color:#60a5fa;
+    background:rgba(255,255,255,.2);
 }
 
 th,td{
-    padding:14px;
+    padding:12px;
     text-align:center;
+    color:white;
 }
 
 tbody tr{
-    border-bottom:1px solid #334155;
+    border-bottom:1px solid rgba(255,255,255,.15);
 }
 
 tbody tr:hover{
-    background:rgba(96,165,250,.08);
-}
-
-.result{
-    color:#facc15;
-    font-weight:bold;
+    background:rgba(255,255,255,.1);
 }
 
 .footer{
     text-align:center;
-    margin-top:20px;
-    color:#64748b;
-    font-size:.9rem;
+    margin-top:15px;
+    color:white;
+    opacity:.8;
 }
 </style>
 </head>
 
 <body>
 
-<div class="bg-glow"></div>
+<div class="wrapper">
 
-<div class="container">
+    <div class="character">
 
-    <h1>🎯 1A2B</h1>
+        <div class="character-card">
 
-    <div class="subtitle">
-        破解隱藏的四位數密碼
-    </div>
+            <div class="character-text">
+                ✨ 數字精靈 ✨
+            </div>
 
-    <div class="input-area">
+            <div class="anime-silhouette">
+                <div class="hair"></div>
+                <div class="head"></div>
+                <div class="body"></div>
+                <div class="skirt"></div>
+                <div class="leg1"></div>
+                <div class="leg2"></div>
+            </div>
 
-        <input
-            type="text"
-            id="guess"
-            maxlength="4"
-            placeholder="輸入4位不重複數字">
-
-        <button
-            class="guess-btn"
-            onclick="checkGuess()">
-            猜測
-        </button>
-
-        <button
-            class="restart-btn"
-            onclick="newGame()">
-            重新開始
-        </button>
+        </div>
 
     </div>
 
-    <div id="message"></div>
+    <div class="panel">
 
-    <div class="table-wrapper">
+        <h1>🎀 1A2B</h1>
+
+        <div class="subtitle">
+            猜出隱藏的四位數字吧！
+        </div>
+
+        <div class="input-area">
+
+            <input
+                id="guess"
+                maxlength="4"
+                placeholder="輸入4位不重複數字">
+
+            <button
+                class="guess-btn"
+                onclick="checkGuess()">
+                猜測
+            </button>
+
+            <button
+                class="restart-btn"
+                onclick="newGame()">
+                重新開始
+            </button>
+
+        </div>
+
+        <div id="message"></div>
 
         <table>
 
             <thead>
                 <tr>
                     <th>回合</th>
-                    <th>猜測數字</th>
+                    <th>猜測</th>
                     <th>結果</th>
                 </tr>
             </thead>
@@ -294,10 +378,10 @@ tbody tr:hover{
 
         </table>
 
-    </div>
+        <div class="footer">
+            Anime Edition 🌸
+        </div>
 
-    <div class="footer">
-        Cyber Dark Edition
     </div>
 
 </div>
@@ -309,14 +393,13 @@ let count = 0;
 
 function generateAnswer(){
 
-    const nums = ['0','1','2','3','4','5','6','7','8','9'];
-
+    let nums = ['0','1','2','3','4','5','6','7','8','9'];
     let result = "";
 
     for(let i=0;i<4;i++){
 
-        const index =
-            Math.floor(Math.random()*nums.length);
+        let index =
+        Math.floor(Math.random()*nums.length);
 
         result += nums[index];
 
@@ -329,24 +412,19 @@ function generateAnswer(){
 function newGame(){
 
     answer = generateAnswer();
-
     count = 0;
 
     document.getElementById("history").innerHTML = "";
-
     document.getElementById("message").innerHTML = "";
-
     document.getElementById("guess").value = "";
-
-    console.log("答案：",answer);
 }
 
 function checkGuess(){
 
     const guess =
-        document.getElementById("guess").value.trim();
+    document.getElementById("guess").value.trim();
 
-    if(!/^\d{4}$/.test(guess)){
+    if(!/^\\d{4}$/.test(guess)){
         alert("請輸入4位數字");
         return;
     }
@@ -371,56 +449,42 @@ function checkGuess(){
         }
     }
 
-    const tbody =
-        document.getElementById("history");
-
     const row =
-        tbody.insertRow();
+    document.getElementById("history").insertRow();
 
     row.insertCell(0).textContent = count;
     row.insertCell(1).textContent = guess;
+    row.insertCell(2).textContent = `${A}A${B}B`;
 
-    const resultCell =
-        row.insertCell(2);
-
-    resultCell.textContent =
-        `${A}A${B}B`;
-
-    resultCell.className =
-        "result";
-
-    const message =
-        document.getElementById("message");
+    const msg =
+    document.getElementById("message");
 
     if(A === 4){
 
-        message.className =
-            "success";
+        msg.className = "success";
 
-        message.innerHTML =
-            `🎉 破解成功！<br>
-            答案：<b>${answer}</b><br>
-            共猜測 <b>${count}</b> 次`;
+        msg.innerHTML =
+        `🎉 恭喜答對！<br>
+        答案是 <b>${answer}</b><br>
+        共猜了 <b>${count}</b> 次`;
 
     }else{
 
-        message.className =
-            "info";
+        msg.className = "";
 
-        message.innerHTML =
-            `第 ${count} 次猜測 → ${A}A${B}B`;
+        msg.innerHTML =
+        `第 ${count} 次猜測：${A}A${B}B`;
     }
 
     document.getElementById("guess").value = "";
-
     document.getElementById("guess").focus();
 }
 
 document
 .getElementById("guess")
-.addEventListener("keydown",function(e){
+.addEventListener("keydown",e=>{
 
-    if(e.key === "Enter"){
+    if(e.key==="Enter"){
         checkGuess();
     }
 });
@@ -430,4 +494,4 @@ newGame();
 </script>
 
 </body>
-</html>S
+</html>
